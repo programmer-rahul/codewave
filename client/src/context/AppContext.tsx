@@ -8,39 +8,46 @@ import {
 } from "react";
 import { Socket } from "socket.io-client";
 
+type Client = {
+  username: string;
+  socketId: string;
+};
+
 type ContextTypes = {
   username: string;
   roomId: string;
-  socket: Socket<DefaultEventsMap, DefaultEventsMap> | null;
+  allClients: [Client] | [];
 
   setUsername: Dispatch<SetStateAction<string>>;
   setRoomId: Dispatch<SetStateAction<string>>;
-  setSocket: Dispatch<
-    SetStateAction<Socket<DefaultEventsMap, DefaultEventsMap> | null>
-  >;
+  setAllClients: Dispatch<SetStateAction<[Client] | []>>;
 };
 
 export const AppContext = createContext<ContextTypes>({
   username: "",
   roomId: "",
-  socket: null,
+  allClients: [],
 
   setRoomId: () => {},
   setUsername: () => {},
-  setSocket: () => {},
+  setAllClients: () => {},
 });
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [username, setUsername] = useState("");
   const [roomId, setRoomId] = useState("");
-  const [socket, setSocket] = useState<Socket<
-    DefaultEventsMap,
-    DefaultEventsMap
-  > | null>(null);
+  const [allClients, setAllClients] = useState<[Client] | []>([]);
 
   return (
     <AppContext.Provider
-      value={{ roomId, setRoomId, username, setUsername, socket, setSocket }}
+      value={{
+        roomId,
+        setRoomId,
+        username,
+        setUsername,
+        allClients,
+        setAllClients,
+      }}
     >
       {children}
     </AppContext.Provider>

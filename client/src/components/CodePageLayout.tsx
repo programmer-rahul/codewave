@@ -11,7 +11,7 @@ const CodePageLayout = () => {
   const { roomId } = useParams();
 
   const { socket, initSocket } = useSocket();
-  const { username, setUsername, setRoomId } = useApp();
+  const { username, setUsername, setRoomId, setAllClients } = useApp();
 
   const [status, setStatus] = useState(false);
 
@@ -25,7 +25,7 @@ const CodePageLayout = () => {
   }, []);
 
   useEffect(() => {
-    if (socket === null) return initSocket();
+    if (socket === null) initSocket();
 
     if (!socket) return;
 
@@ -36,7 +36,22 @@ const CodePageLayout = () => {
       toast.success(username + " joined the room")
     );
 
-    socket.on("user-disconnected", () => {});
+    socket.on("room-left", ({ username }: { username: string }) => {
+      toast.error(username + " left the room");
+    });
+
+    socket.on("updated-client-list", ({ clients }) => {
+      console.log(clients);
+      setAllClients(clients);
+    });
+
+    return () => {
+      if (socket === null) return;
+      socket.off("connect");
+      socket.off("room-joined");
+      socket.off("room-left");
+      socket.off("updated-client-list");
+    };
   }, [socket]);
 
   return !status ? <div>Loading...</div> : <CodePage />;

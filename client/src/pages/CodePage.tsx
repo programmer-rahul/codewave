@@ -1,4 +1,8 @@
+import { useApp } from "../context/AppContext";
+
 const CodePage = () => {
+  const { allClients } = useApp();
+
   return (
     <main className="h-screen bg-slate-900">
       <div className="flex h-full border">
@@ -13,7 +17,9 @@ const CodePage = () => {
               <div className="connected-users">
                 <p className="text-xl text-white">Connected Users</p>
                 <div className="user-list grid grid-cols-3 place-items-start gap-y-10 mt-10">
-                  <CodeUser />
+                  {allClients?.map((client, index) => (
+                    <CodeUser key={index} username={client.username} />
+                  ))}
                 </div>
               </div>
             </div>
