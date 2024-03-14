@@ -1,18 +1,14 @@
-import {
-  useContext,
-  createContext,
-  ReactNode,
-  useState,
-  useEffect,
-} from "react";
+import { useContext, createContext, ReactNode, useState } from "react";
 import socketio from "socket.io-client";
 
 type ContextTypes = {
   socket: ReturnType<typeof socketio> | null;
+  initSocket: () => void;
 };
 
 export const SocketContext = createContext<ContextTypes>({
   socket: null,
+  initSocket: () => {},
 });
 
 export const SocketProvider = ({ children }: { children: ReactNode }) => {
@@ -20,12 +16,12 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
     null
   );
 
-  useEffect(() => {
+  const initSocket = () => {
     setSocket(socketio("http://localhost:8000"));
-  }, []);
+  };
 
   return (
-    <SocketContext.Provider value={{ socket }}>
+    <SocketContext.Provider value={{ socket, initSocket }}>
       {children}
     </SocketContext.Provider>
   );

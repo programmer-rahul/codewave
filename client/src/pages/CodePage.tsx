@@ -1,12 +1,4 @@
-import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
-
 const CodePage = () => {
-  const location = useLocation();
-  useEffect(() => {
-    console.log(location);
-  }, []);
-
   return (
     <main className="h-screen bg-slate-900">
       <div className="flex h-full border">

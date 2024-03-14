@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useApp } from "../../context/AppContext";
 
 const HomePageForm = () => {
+  const location = useLocation();
+
   const [username, setUsername] = useState("");
   const [roomId, setRoomId] = useState("");
 
@@ -27,8 +29,17 @@ const HomePageForm = () => {
     storeRoomIdToContext(roomId);
     storeUsernameToContext(username);
 
-    navigate("code/2", { state: username });
+    navigate(`code/${roomId}`, { state: { username } });
   };
+
+  useEffect(() => {
+    console.log(location);
+    if (location.state?.roomId) {
+      console.log("inside");
+      toast.success("Username is required");
+      setRoomId(location.state.roomId);
+    }
+  }, []);
 
   return (
     <div className="container w-[600px] h-[300px] bg-gray-800 p-2 rounded-lg space-y-8">
