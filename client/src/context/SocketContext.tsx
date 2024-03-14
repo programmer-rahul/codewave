@@ -6,7 +6,6 @@ import {
   useEffect,
 } from "react";
 import socketio from "socket.io-client";
-import { LocalStorage } from "../utils";
 
 type ContextTypes = {
   socket: ReturnType<typeof socketio> | null;
@@ -22,26 +21,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
   );
 
   useEffect(() => {
-    const user = LocalStorage.get("codesync-user");
-
-    const newUser = {
-      userId: "",
-      username: "",
-      room: null,
-    };
-
-    if (!user) {
-      newUser.userId = String(Math.floor(Math.random() * 200));
-      LocalStorage.set("codesync-user", newUser);
-    }
-
-    setSocket(
-      socketio("http://localhost:8000", {
-        auth: {
-          user: user ? user : newUser,
-        },
-      })
-    );
+    setSocket(socketio("http://localhost:8000"));
   }, []);
 
   return (
