@@ -16,7 +16,6 @@ const mountSocketIO = (io) => {
     console.log("A user connected to the server ", socket.id);
 
     socket.on("room-join", ({ username, roomId }) => {
-      console.log(username);
       userSockets[socket.id] = { roomId, username };
       socket.join(roomId);
 
@@ -25,7 +24,7 @@ const mountSocketIO = (io) => {
         .emit("room-joined", { username, socketId: socket.id });
 
       const allClients = getAllClients(roomId);
-      console.log("allClients", allClients);
+      // console.log("allClients", allClients);
 
       io.to(roomId).emit("updated-client-list", { clients: allClients });
     });

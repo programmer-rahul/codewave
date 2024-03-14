@@ -10,7 +10,7 @@ const CodePageLayout = () => {
   const location = useLocation();
   const { roomId } = useParams();
 
-  const { socket, initSocket } = useSocket();
+  const { socket, setSocket, initSocket } = useSocket();
   const { username, setUsername, setRoomId, setAllClients } = useApp();
 
   const [status, setStatus] = useState(false);
@@ -28,10 +28,10 @@ const CodePageLayout = () => {
     if (socket === null) initSocket();
 
     if (!socket) return;
+    console.log("socket");
 
     socket.on("connect", () => setStatus(true));
 
-    socket.emit("room-join", { username, roomId });
     socket.on("room-joined", ({ username }: { username: string }) =>
       toast.success(username + " joined the room")
     );
@@ -45,12 +45,16 @@ const CodePageLayout = () => {
       setAllClients(clients);
     });
 
+    socket.emit("room-join", { username, roomId });
+
     return () => {
       if (socket === null) return;
       socket.off("connect");
       socket.off("room-joined");
       socket.off("room-left");
       socket.off("updated-client-list");
+      socket.disconnect();
+      setSocket(null);
     };
   }, [socket]);
 
