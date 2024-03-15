@@ -1,6 +1,6 @@
 import HomePage from "./pages/HomePage";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import CodePageLayout from "./components/CodePageLayout";
+import CodePageLayout from "./layouts/CodePageLayout";
 
 const App = () => {
   return (

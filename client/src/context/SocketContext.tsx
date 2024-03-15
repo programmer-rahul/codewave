@@ -1,37 +1,28 @@
-import {
-  useContext,
-  createContext,
-  ReactNode,
-  useState,
-  Dispatch,
-} from "react";
+import { createContext, ReactNode, useState } from "react";
 import socketio from "socket.io-client";
 
 type ContextTypes = {
   socket: ReturnType<typeof socketio> | null;
-  setSocket: Dispatch<ReturnType<typeof socketio> | null>;
-  initSocket: () => void;
+  connectSocket: () => void;
+  disconnectSocket: () => void;
 };
 
 export const SocketContext = createContext<ContextTypes>({
   socket: null,
-  setSocket: () => {},
-  initSocket: () => {},
+  connectSocket: () => {},
+  disconnectSocket: () => {},
 });
 
 export const SocketProvider = ({ children }: { children: ReactNode }) => {
   const [socket, setSocket] = useState<ReturnType<typeof socketio> | null>(
     null
   );
-  const initSocket = () => {
-    setSocket(socketio("http://localhost:8000"));
-  };
+  const connectSocket = () => setSocket(socketio("http://localhost:8000"));
+  const disconnectSocket = () => setSocket(null);
 
   return (
-    <SocketContext.Provider value={{ socket, setSocket, initSocket }}>
+    <SocketContext.Provider value={{ socket, disconnectSocket, connectSocket }}>
       {children}
     </SocketContext.Provider>
   );
 };
-
-export const useSocket = () => useContext(SocketContext);

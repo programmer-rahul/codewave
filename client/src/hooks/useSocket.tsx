@@ -1,24 +1,23 @@
-import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import socketIO from "socket.io-client";
 import { useApp } from "../context/AppContext";
+import { useContext, useEffect, useState } from "react";
+
+import toast from "react-hot-toast";
+import { SocketContext } from "../context/SocketContext";
 
 const useSocket = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { roomId } = useParams();
+  const { socket, connectSocket, disconnectSocket } = useContext(SocketContext);
+  const { username, setUsername, setRoomId, setAllClients } = useApp();
 
-  const { username, setRoomId, setUsername, socket, setSocket } = useApp();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { roomId } = useParams();
 
   const [connectionStatus, setConnectionStatus] = useState(false);
 
   useEffect(() => {
-    console.log(location);
-    console.log(roomId);
-
     if (!location.state?.username) {
-      // toast.error("username required");
-      navigate("/", { state: { roomId } });
+      return navigate("/", { state: { roomId: roomId } });
     } else {
       setUsername(location.state.username);
       roomId && setRoomId(roomId);
@@ -26,27 +25,38 @@ const useSocket = () => {
   }, []);
 
   useEffect(() => {
-    connectSocket();
+    if (socket === null) connectSocket();
+
+    if (!socket) return;
+
+    socket.on("connect", () => setConnectionStatus(true));
+
+    socket.on("room-joined", ({ username }: { username: string }) =>
+      toast.success(username + " joined the room")
+    );
+
+    socket.on("room-left", ({ username }: { username: string }) => {
+      toast.error(username + " left the room");
+    });
+
+    socket.on("updated-client-list", ({ clients }) => {
+      console.log(clients);
+      setAllClients(clients);
+    });
+
+    socket.emit("room-join", { username, roomId });
 
     return () => {
       if (socket === null) return;
       socket.off("connect");
-      socket.off("room-join");
+      socket.off("room-joined");
+      socket.off("room-left");
+      socket.off("updated-client-list");
+      socket.disconnect();
+      disconnectSocket();
     };
   }, [socket]);
 
-  const connectSocket = () => {
-    if (socket === null) {
-      const socket = socketIO("http://localhost:8000");
-      setSocket(socket);
-    }
-    if (socket === null) return;
-
-    socket?.on("connect", () => setConnectionStatus(true));
-
-    socket?.emit("room-join", { username, roomId });
-  };
-
   return { connectionStatus };
 };
-export default useSocke;
+export default useSocket;

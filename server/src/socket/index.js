@@ -29,6 +29,12 @@ const mountSocketIO = (io) => {
       io.to(roomId).emit("updated-client-list", { clients: allClients });
     });
 
+    // for code
+    socket.on("code-change", ({ code }) => {
+      const roomId = userSockets[socket.id]?.roomId;
+      socket.broadcast.to(roomId).emit("updated-code", { updatedCode: code });
+    });
+
     socket.on("disconnect", () => {
       console.log("A user disconnected ", userSockets[socket.id]);
       const username = userSockets[socket.id]?.username;
