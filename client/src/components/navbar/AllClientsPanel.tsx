@@ -12,10 +12,10 @@ const AllClientsPanel = () => {
       .catch(() => toast.error("Failded to copy"));
   };
   return (
-    <div className="flex flex-col h-full justify-between">
+    <div className="flex h-full flex-col justify-between p-4">
       <div className="space-y-8">
-        <h2 className="text-white font-semibold text-xl">Connected Users</h2>
-        <div className="flex gap-5 flex-wrap ">
+        <h2 className="text-xl font-semibold text-white">Connected Users</h2>
+        <div className="flex flex-wrap gap-5 ">
           {allClients?.map((client, index) => (
             <Client key={index} username={client.username} />
           ))}
@@ -24,12 +24,12 @@ const AllClientsPanel = () => {
 
       <div className="flex gap-4 self-end">
         <button
-          className="px-4 py-1 rounded-md bg-green-600 text-white font-semibold self-end text-xl"
+          className="self-end rounded-md bg-green-600 px-4 py-1 text-xl font-semibold text-white"
           onClick={shareRoomClickHandler}
         >
           Share RoomId
         </button>
-        <button className="px-4 py-1 rounded-md bg-rose-900 text-white font-semibold self-end text-xl">
+        <button className="self-end rounded-md bg-rose-900 px-4 py-1 text-xl font-semibold text-white">
           Exit Room
         </button>
       </div>

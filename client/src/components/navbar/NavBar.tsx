@@ -1,12 +1,13 @@
 import { Tab, useApp } from "../../context/AppContext";
 import AllClientsPanel from "./AllClientsPanel";
 import FilesPanel from "./FilesPanel";
+import ChatPanel from "./ChatPanel";
 
 const SideNavBar = () => {
   const { selectedTab, setSelectedTab } = useApp();
 
   const handleTabIconClick = (
-    e: React.MouseEvent<HTMLImageElement, MouseEvent>
+    e: React.MouseEvent<HTMLImageElement, MouseEvent>,
   ) => {
     let clickedTab: Tab = e.currentTarget.alt as Tab;
 
@@ -18,7 +19,7 @@ const SideNavBar = () => {
 
   return (
     <div className="flex">
-      <div className="sidenavbar border-r flex flex-col items-start justify-between p-4">
+      <div className="sidenavbar flex flex-col items-start justify-between border-r p-4">
         <div className="space-y-4">
           <img
             src="/clients.svg"
@@ -53,10 +54,10 @@ const SideNavBar = () => {
         </div>
       </div>
 
-      <div className="selected-tab p-4 w-[30rem] ">
+      <div className="selected-tab w-[30rem]">
         {selectedTab === "clients" && <AllClientsPanel />}
         {selectedTab === "files" && <FilesPanel />}
-        {selectedTab === "chat" && <div>Chat</div>}
+        {selectedTab === "chat" && <ChatPanel />}
         {selectedTab === "setting" && <div>Setting</div>}
       </div>
     </div>

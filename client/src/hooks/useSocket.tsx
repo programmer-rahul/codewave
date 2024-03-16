@@ -16,6 +16,7 @@ const useSocket = () => {
   const [connectionStatus, setConnectionStatus] = useState(false);
 
   useEffect(() => {
+    console.log(roomId);
     if (!location.state?.username) {
       return navigate("/", { state: { roomId: roomId } });
     } else {

@@ -1,4 +1,4 @@
 const FilesPanel = () => {
-  return <div>FilesPanel</div>;
+  return <div className="p-4">FilesPanel</div>;
 };
 export default FilesPanel;

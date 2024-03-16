@@ -50,6 +50,19 @@ const mountSocketIO = (io) => {
       socket.leave();
       delete userSockets[socket.id];
     });
+
+    // chat
+    socket.on("new-message", ({ message }) => {
+      const roomId = userSockets[socket.id]?.roomId;
+      const username = userSockets[socket.id]?.username;
+      console.log(message);
+      console.log(roomId);
+      console.log(userSockets);
+
+      socket.broadcast
+        .to(roomId)
+        .emit("recieved-message", { message, username });
+    });
   });
 };
 

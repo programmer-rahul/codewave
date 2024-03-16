@@ -9,3 +9,11 @@ body {
   box-sizing: border-box;
   font-family: "Input Mono";
 }
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

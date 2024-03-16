@@ -6,7 +6,6 @@ import { v4 as uuid } from "uuid";
 import { useApp } from "../../context/AppContext";
 
 const HomePageForm = () => {
-  ``;
   const location = useLocation();
 
   const [username, setUsername] = useState("");
@@ -36,6 +35,7 @@ const HomePageForm = () => {
   };
 
   useEffect(() => {
+    console.log(location);
     if (location.state?.roomId) {
       toast.success("Username is required");
       setRoomId(location.state.roomId);
