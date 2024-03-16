@@ -1,21 +1,27 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { SocketContext } from "../../context/SocketContext";
 import { MessageType, useApp } from "../../context/AppContext";
 
 const ChatPanel = () => {
   const { socket } = useContext(SocketContext);
-  const { chatMessages, setChatMessages, username } = useApp();
+  const {
+    chatMessages,
+    setChatMessages,
+    username,
+    unreadMessageCount: unreadCount,
+    setUnreadMessageCount: setUnreadCount,
+  } = useApp();
 
   const [message, setMessage] = useState("");
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const sendMessageHandler = () => {
     if (message.trim() === "") return;
     if (!socket) return;
 
-    setChatMessages([
-      ...chatMessages,
-      { message: message, username: username, owner: true },
-    ]);
+    setChatMessages((prev) => {
+      return [...prev, { message: message, username: username, owner: true }];
+    });
     socket.emit("new-message", { message });
   };
 
@@ -23,6 +29,7 @@ const ChatPanel = () => {
     if (!socket) return;
     socket.on("recieved-message", (message: MessageType) => {
       console.log("chatMessage", chatMessages);
+      message["isSeen"] = true;
       setChatMessages((prev) => {
         return [...prev, message];
       });
@@ -33,25 +40,40 @@ const ChatPanel = () => {
     };
   }, [socket]);
 
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+
+    if (unreadCount > 0) {
+      const modifiedChatMessages = chatMessages.map((message) => {
+        return { ...message, isSeen: true };
+      });
+      setChatMessages(modifiedChatMessages);
+      setUnreadCount(0);
+    }
+  }, [chatMessages]);
+
   return (
-    <div className="chatpanel relative h-full border">
+    <div className="chatpanel relative h-full">
       <h2 className="fixed h-[5%] w-full bg-slate-900 p-2 text-xl font-semibold text-white">
         Room Chat
       </h2>
       {/* messages  */}
-      <div className="room-messages no-scrollbar flex min-h-full flex-col items-center gap-8 overflow-x-hidden overflow-y-scroll bg-zinc-900 py-4 pt-20">
+      <div className="room-messages no-scrollbar flex max-h-full min-h-full flex-col items-center gap-8 overflow-x-hidden overflow-y-scroll bg-zinc-900  py-20">
         {chatMessages.map((chatMessage, index) => {
           console.log(chatMessage);
           return (
             <ChatMessage
               message={chatMessage.message}
               username={chatMessage.username}
+              owner={chatMessage.owner}
               key={index}
             />
           );
         })}
+        <div ref={scrollRef} />
       </div>
 
+      {/* message input bar  */}
       <div className="absolute bottom-4 w-full px-4">
         <div className="flex items-center gap-2 rounded-md border border-stone-700 bg-stone-900 px-3 py-2">
           <div className="w-full">
@@ -81,6 +103,7 @@ const ChatPanel = () => {
 export default ChatPanel;
 
 const ChatMessage = ({ username, message, owner = false }: MessageType) => {
+  console.log("owner : " + owner);
   return (
     <div
       className={`message min-w-44 space-y-2 rounded-md  bg-slate-700 px-3 py-1 ${owner ? "self-end" : "self-start"}`}

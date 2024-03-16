@@ -1,8 +1,11 @@
 import { useApp } from "../../context/AppContext";
 import toast from "react-hot-toast";
 import Client from "./Client";
+import { useNavigate } from "react-router-dom";
 
 const AllClientsPanel = () => {
+  const navigate = useNavigate();
+
   const { allClients, roomId } = useApp();
 
   const shareRoomClickHandler = () => {
@@ -29,7 +32,12 @@ const AllClientsPanel = () => {
         >
           Share RoomId
         </button>
-        <button className="self-end rounded-md bg-rose-900 px-4 py-1 text-xl font-semibold text-white">
+        <button
+          className="self-end rounded-md bg-rose-900 px-4 py-1 text-xl font-semibold text-white"
+          onClick={() => {
+            navigate("/");
+          }}
+        >
           Exit Room
         </button>
       </div>

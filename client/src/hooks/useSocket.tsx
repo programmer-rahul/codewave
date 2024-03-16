@@ -1,5 +1,5 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useApp } from "../context/AppContext";
+import { MessageType, useApp } from "../context/AppContext";
 import { useContext, useEffect, useState } from "react";
 
 import toast from "react-hot-toast";
@@ -7,7 +7,14 @@ import { SocketContext } from "../context/SocketContext";
 
 const useSocket = () => {
   const { socket, connectSocket, disconnectSocket } = useContext(SocketContext);
-  const { username, setUsername, setRoomId, setAllClients } = useApp();
+  const {
+    username,
+    setUsername,
+    setRoomId,
+    setAllClients,
+    chatMessages,
+    setChatMessages,
+  } = useApp();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -33,7 +40,7 @@ const useSocket = () => {
     socket.on("connect", () => setConnectionStatus(true));
 
     socket.on("room-joined", ({ username }: { username: string }) =>
-      toast.success(username + " joined the room")
+      toast.success(username + " joined the room"),
     );
 
     socket.on("room-left", ({ username }: { username: string }) => {
@@ -41,8 +48,16 @@ const useSocket = () => {
     });
 
     socket.on("updated-client-list", ({ clients }) => {
-      console.log(clients);
       setAllClients(clients);
+    });
+
+    // chat
+    socket.on("recieved-message", (message: MessageType) => {
+      console.log("chatMessages", chatMessages);
+      setChatMessages((prev) => {
+        message["isSeen"] = false;
+        return [...prev, message];
+      });
     });
 
     socket.emit("room-join", { username, roomId });
@@ -53,6 +68,7 @@ const useSocket = () => {
       socket.off("room-joined");
       socket.off("room-left");
       socket.off("updated-client-list");
+      socket.off("recieve-message");
       socket.disconnect();
       disconnectSocket();
     };
