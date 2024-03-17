@@ -7,17 +7,23 @@ import {
   SetStateAction,
 } from "react";
 
-type Client = {
+interface Client {
   username: string;
   socketId: string;
-};
+}
 export type Tab = "clients" | "files" | "chat" | "setting";
 
-export type MessageType = {
+export interface MessageType {
   message: string;
   username: string;
   owner?: boolean;
-};
+}
+
+export interface Folder {
+  folderName: string;
+  files: string[];
+  subFolders?: { folderName: string; files: string[] }[];
+}
 
 type ContextTypes = {
   username: string;
@@ -31,6 +37,8 @@ type ContextTypes = {
 
   connectionStatus: boolean;
 
+  folderStructure: Folder[];
+
   setUsername: Dispatch<SetStateAction<string>>;
   setRoomId: Dispatch<SetStateAction<string>>;
   setAllClients: Dispatch<SetStateAction<[Client] | []>>;
@@ -39,6 +47,8 @@ type ContextTypes = {
   setUnreadMessageCount: Dispatch<SetStateAction<number>>;
 
   setConnectionStatus: Dispatch<SetStateAction<boolean>>;
+
+  setFolderStructure: Dispatch<SetStateAction<Folder[]>>;
 };
 
 export const AppContext = createContext<ContextTypes>({
@@ -49,6 +59,7 @@ export const AppContext = createContext<ContextTypes>({
   chatMessages: [],
   unreadMessageCount: 0,
   connectionStatus: false,
+  folderStructure: [],
 
   setRoomId: () => {},
   setUsername: () => {},
@@ -57,6 +68,7 @@ export const AppContext = createContext<ContextTypes>({
   setChatMessages: () => {},
   setUnreadMessageCount: () => {},
   setConnectionStatus: () => {},
+  setFolderStructure: () => {},
 });
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
@@ -64,13 +76,20 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [roomId, setRoomId] = useState("");
   const [allClients, setAllClients] = useState<[Client] | []>([]);
 
-  const [selectedTab, setSelectedTab] = useState<Tab>("clients");
+  const [selectedTab, setSelectedTab] = useState<Tab>("files");
 
   // chat
   const [chatMessages, setChatMessages] = useState<MessageType[] | []>([]);
   const [unreadMessageCount, setUnreadMessageCount] = useState(0);
 
   const [connectionStatus, setConnectionStatus] = useState(false);
+
+  const [folderStructure, setFolderStructure] = useState([
+    {
+      folderName: "Untitled",
+      files: ["index.js"],
+    },
+  ]);
 
   return (
     <AppContext.Provider
@@ -92,6 +111,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
         connectionStatus,
         setConnectionStatus,
+
+        folderStructure,
+        setFolderStructure,
       }}
     >
       {children}
