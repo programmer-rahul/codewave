@@ -26,28 +26,9 @@ const ChatPanel = () => {
   };
 
   useEffect(() => {
-    if (!socket) return;
-    socket.on("recieved-message", (message: MessageType) => {
-      console.log("chatMessage", chatMessages);
-      message["isSeen"] = true;
-      setChatMessages((prev) => {
-        return [...prev, message];
-      });
-    });
-
-    return () => {
-      socket.off("recieved-message");
-    };
-  }, [socket]);
-
-  useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
 
     if (unreadCount > 0) {
-      const modifiedChatMessages = chatMessages.map((message) => {
-        return { ...message, isSeen: true };
-      });
-      setChatMessages(modifiedChatMessages);
       setUnreadCount(0);
     }
   }, [chatMessages]);
@@ -60,7 +41,6 @@ const ChatPanel = () => {
       {/* messages  */}
       <div className="room-messages no-scrollbar flex max-h-full min-h-full flex-col items-center gap-8 overflow-x-hidden overflow-y-scroll bg-zinc-900  py-20">
         {chatMessages.map((chatMessage, index) => {
-          console.log(chatMessage);
           return (
             <ChatMessage
               message={chatMessage.message}
@@ -103,7 +83,6 @@ const ChatPanel = () => {
 export default ChatPanel;
 
 const ChatMessage = ({ username, message, owner = false }: MessageType) => {
-  console.log("owner : " + owner);
   return (
     <div
       className={`message min-w-44 space-y-2 rounded-md  bg-slate-700 px-3 py-1 ${owner ? "self-end" : "self-start"}`}

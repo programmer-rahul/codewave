@@ -7,7 +7,6 @@ const EditorPanel = () => {
   const { fileCode, setFileCode } = useFile();
   const { socket } = useContext(SocketContext);
 
-  console.log(fileCode);
   const codeChangeHandler = (code: string) => {
     console.log(code);
     setFileCode(code);
@@ -16,10 +15,8 @@ const EditorPanel = () => {
 
   useEffect(() => {
     if (socket === null) return;
-    console.log(socket);
 
     socket.on("updated-code", ({ updatedCode }: { updatedCode: string }) => {
-      console.log("updatedCode", updatedCode);
       setFileCode(updatedCode);
     });
 

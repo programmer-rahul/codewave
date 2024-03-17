@@ -17,7 +17,6 @@ export type MessageType = {
   message: string;
   username: string;
   owner?: boolean;
-  isSeen?: boolean;
 };
 
 type ContextTypes = {
@@ -30,12 +29,16 @@ type ContextTypes = {
   chatMessages: MessageType[] | [];
   unreadMessageCount: number;
 
+  connectionStatus: boolean;
+
   setUsername: Dispatch<SetStateAction<string>>;
   setRoomId: Dispatch<SetStateAction<string>>;
   setAllClients: Dispatch<SetStateAction<[Client] | []>>;
   setSelectedTab: Dispatch<SetStateAction<Tab>>;
   setChatMessages: Dispatch<SetStateAction<MessageType[] | []>>;
   setUnreadMessageCount: Dispatch<SetStateAction<number>>;
+
+  setConnectionStatus: Dispatch<SetStateAction<boolean>>;
 };
 
 export const AppContext = createContext<ContextTypes>({
@@ -45,6 +48,7 @@ export const AppContext = createContext<ContextTypes>({
   selectedTab: "clients",
   chatMessages: [],
   unreadMessageCount: 0,
+  connectionStatus: false,
 
   setRoomId: () => {},
   setUsername: () => {},
@@ -52,6 +56,7 @@ export const AppContext = createContext<ContextTypes>({
   setSelectedTab: () => {},
   setChatMessages: () => {},
   setUnreadMessageCount: () => {},
+  setConnectionStatus: () => {},
 });
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
@@ -64,6 +69,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   // chat
   const [chatMessages, setChatMessages] = useState<MessageType[] | []>([]);
   const [unreadMessageCount, setUnreadMessageCount] = useState(0);
+
+  const [connectionStatus, setConnectionStatus] = useState(false);
 
   return (
     <AppContext.Provider
@@ -82,6 +89,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         setChatMessages,
         unreadMessageCount,
         setUnreadMessageCount,
+
+        connectionStatus,
+        setConnectionStatus,
       }}
     >
       {children}

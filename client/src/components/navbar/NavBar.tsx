@@ -2,16 +2,9 @@ import { Tab, useApp } from "../../context/AppContext";
 import AllClientsPanel from "./AllClientsPanel";
 import FilesPanel from "./FilesPanel";
 import ChatPanel from "./ChatPanel";
-import { useEffect } from "react";
 
 const SideNavBar = () => {
-  const {
-    selectedTab,
-    setSelectedTab,
-    chatMessages,
-    unreadMessageCount,
-    setUnreadMessageCount,
-  } = useApp();
+  const { selectedTab, setSelectedTab, unreadMessageCount } = useApp();
 
   const handleTabIconClick = (
     e: React.MouseEvent<HTMLImageElement, MouseEvent>,
@@ -23,13 +16,6 @@ const SideNavBar = () => {
     clickedTab === "chat" && setSelectedTab(clickedTab);
     clickedTab === "setting" && setSelectedTab(clickedTab);
   };
-
-  useEffect(() => {
-    const unreadMessages = chatMessages.filter(
-      (message) => message.isSeen === false,
-    );
-    setUnreadMessageCount(unreadMessages.length);
-  }, [chatMessages]);
 
   return (
     <div className="flex">
