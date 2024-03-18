@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { SocketContext } from "../../context/SocketContext";
-import { MessageType, useApp } from "../../context/AppContext";
+import { MessageInterface, useApp } from "../../context/AppContext";
 
 const ChatPanel = () => {
   const { socket } = useContext(SocketContext);
@@ -82,7 +82,11 @@ const ChatPanel = () => {
 };
 export default ChatPanel;
 
-const ChatMessage = ({ username, message, owner = false }: MessageType) => {
+const ChatMessage = ({
+  username,
+  message,
+  owner = false,
+}: MessageInterface) => {
   return (
     <div
       className={`message min-w-44 space-y-2 rounded-md  bg-slate-700 px-3 py-1 ${owner ? "self-end" : "self-start"}`}

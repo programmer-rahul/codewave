@@ -1,4 +1,4 @@
-import { Tab, useApp } from "../../context/AppContext";
+import { TabType, useApp } from "../../context/AppContext";
 import AllClientsPanel from "./AllClientsPanel";
 import FilesPanel from "./FilesPanel";
 import ChatPanel from "./ChatPanel";
@@ -9,7 +9,7 @@ const SideNavBar = () => {
   const handleTabIconClick = (
     e: React.MouseEvent<HTMLImageElement, MouseEvent>,
   ) => {
-    let clickedTab: Tab = e.currentTarget.alt as Tab;
+    let clickedTab: TabType = e.currentTarget.alt as TabType;
 
     clickedTab === "clients" && setSelectedTab(clickedTab);
     clickedTab === "files" && setSelectedTab(clickedTab);

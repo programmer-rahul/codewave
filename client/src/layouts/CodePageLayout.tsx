@@ -16,6 +16,7 @@ const CodePageLayout = () => {
     connectionStatus,
     setConnectionStatus,
   } = useApp();
+
   const { socket, connectSocket, disconnectSocket } = useContext(SocketContext);
 
   useEffect(() => {
@@ -30,7 +31,7 @@ const CodePageLayout = () => {
   useEffect(() => {
     console.log("mounted");
 
-    if (socket === null) connectSocket();
+    // if (socket === null) connectSocket();
     if (!socket) return;
 
     socket.on("connect", () => {

@@ -7,48 +7,38 @@ import {
   SetStateAction,
 } from "react";
 
-interface Client {
+interface ClientInterface {
   username: string;
   socketId: string;
 }
-export type Tab = "clients" | "files" | "chat" | "setting";
+export type TabType = "clients" | "files" | "chat" | "setting";
 
-export interface MessageType {
+export interface MessageInterface {
   message: string;
   username: string;
   owner?: boolean;
 }
 
-export interface Folder {
-  folderName: string;
-  files: string[];
-  subFolders?: { folderName: string; files: string[] }[];
-}
-
 type ContextTypes = {
   username: string;
   roomId: string;
-  allClients: [Client] | [];
-  selectedTab: Tab;
+  allClients: [ClientInterface] | [];
+  selectedTab: TabType;
 
   // chat
-  chatMessages: MessageType[] | [];
+  chatMessages: MessageInterface[] | [];
   unreadMessageCount: number;
 
   connectionStatus: boolean;
 
-  folderStructure: Folder[];
-
   setUsername: Dispatch<SetStateAction<string>>;
   setRoomId: Dispatch<SetStateAction<string>>;
-  setAllClients: Dispatch<SetStateAction<[Client] | []>>;
-  setSelectedTab: Dispatch<SetStateAction<Tab>>;
-  setChatMessages: Dispatch<SetStateAction<MessageType[] | []>>;
+  setAllClients: Dispatch<SetStateAction<[ClientInterface] | []>>;
+  setSelectedTab: Dispatch<SetStateAction<TabType>>;
+  setChatMessages: Dispatch<SetStateAction<MessageInterface[] | []>>;
   setUnreadMessageCount: Dispatch<SetStateAction<number>>;
 
   setConnectionStatus: Dispatch<SetStateAction<boolean>>;
-
-  setFolderStructure: Dispatch<SetStateAction<Folder[]>>;
 };
 
 export const AppContext = createContext<ContextTypes>({
@@ -59,7 +49,6 @@ export const AppContext = createContext<ContextTypes>({
   chatMessages: [],
   unreadMessageCount: 0,
   connectionStatus: false,
-  folderStructure: [],
 
   setRoomId: () => {},
   setUsername: () => {},
@@ -68,28 +57,20 @@ export const AppContext = createContext<ContextTypes>({
   setChatMessages: () => {},
   setUnreadMessageCount: () => {},
   setConnectionStatus: () => {},
-  setFolderStructure: () => {},
 });
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [username, setUsername] = useState("");
   const [roomId, setRoomId] = useState("");
-  const [allClients, setAllClients] = useState<[Client] | []>([]);
+  const [allClients, setAllClients] = useState<[ClientInterface] | []>([]);
 
-  const [selectedTab, setSelectedTab] = useState<Tab>("files");
+  const [selectedTab, setSelectedTab] = useState<TabType>("files");
 
   // chat
-  const [chatMessages, setChatMessages] = useState<MessageType[] | []>([]);
+  const [chatMessages, setChatMessages] = useState<MessageInterface[] | []>([]);
   const [unreadMessageCount, setUnreadMessageCount] = useState(0);
 
-  const [connectionStatus, setConnectionStatus] = useState(false);
-
-  const [folderStructure, setFolderStructure] = useState([
-    {
-      folderName: "Untitled",
-      files: ["index.js"],
-    },
-  ]);
+  const [connectionStatus, setConnectionStatus] = useState(true);
 
   return (
     <AppContext.Provider
@@ -111,9 +92,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
         connectionStatus,
         setConnectionStatus,
-
-        folderStructure,
-        setFolderStructure,
       }}
     >
       {children}
