@@ -1,64 +1,25 @@
-import { useFile } from "../../context/FileContext";
-import { v4 as uuidv4 } from "uuid";
+import FileControls from "./file/FileControls";
 import Folder from "./file/Folder";
+import { useFile } from "../../context/FileContext";
 
 const FilesPanel = () => {
-  const { folderStructure, setResourceType } = useFile();
-
-  const createNewFileHandler = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-  ) => {
-    console.log(event.target);
-    setResourceType({
-      isCreating: true,
-      type: "file",
-    });
-  };
+  const { projectStructure } = useFile();
 
   return (
     <div className="p-4">
       <div className=" space-y-4">
-        <div className="files-controls  flex items-center justify-between text-white">
-          <p className="text-xl font-bold">Explorer</p>
-
-          <div className="flex gap-6">
-            <div>
-              <img
-                src="/new-file.svg"
-                alt="new-file"
-                width={25}
-                className="cursor-pointer"
-                onClick={createNewFileHandler}
-              />
-            </div>
-            <div>
-              <img
-                src="/new-folder.svg"
-                alt="new-folder"
-                width={25}
-                className="cursor-pointer"
-              />
-            </div>
-            <div>
-              <img
-                src="/dots-3.svg"
-                alt="dots-3"
-                width={25}
-                className="cursor-pointer"
-              />
-            </div>
-          </div>
-        </div>
+        <FileControls />
 
         <ul className="space-y-4">
-          {folderStructure.map((folder) => {
+          {projectStructure.map((folder) => {
+            const { name, id, files, subFolders } = folder;
             return (
               <Folder
-                folderName={folder.folderName}
-                folderId={folder.folderId}
-                subFolders={folder.subFolders}
-                files={folder.files}
-                key={uuidv4()}
+                name={name}
+                id={id}
+                files={files}
+                subFolders={subFolders}
+                key={id}
               />
             );
           })}
