@@ -7,6 +7,7 @@ import {
   SetStateAction,
 } from "react";
 import { FolderInterface, ResourceInterface } from "../interfaces/file";
+import { v4 as uuidv4 } from "uuid";
 
 type ContextTypes = {
   fileCode: string;
@@ -39,42 +40,34 @@ export const FileContext = createContext<ContextTypes>({
   setSelectedFolder: () => {},
 });
 
+console.log(uuidv4())
+console.log(uuidv4())
+
 const defaultFolders: FolderInterface[] = [
   {
-    name: "folder1",
-    id: Math.random().toString(36),
+    name: ":root",
+    id: ":root",
     files: [
-      {
-        name: "file1",
-        id: Math.random().toString(36),
-        content: "something here",
-      },
-    ],
-    subFolders: [],
-  },
-  {
-    name: "folder2",
-    id: Math.random().toString(36),
-    files: [
-      {
-        name: "file22",
-        id: Math.random().toString(36),
-        content: "something here",
-      },
+      // {
+      //   name: "html.js",
+      //   id: uuidv4(),
+      // },
+      // {
+      //   name: "style.css",
+      //   id: uuidv4(),
+      // },
     ],
     subFolders: [
-      {
-        name: "subFolder",
-        id: Math.random().toString(36),
-        files: [
-          {
-            name: "subFile1",
-            id: Math.random().toString(36),
-
-            content: "something here",
-          },
-        ],
-      },
+      // {
+      //   name: "what",
+      //   id: uuidv4(),
+      //   files: [
+      //     {
+      //       name: "script.js",
+      //       id: uuidv4(),
+      //     },
+      //   ],
+      // },
     ],
   },
 ];
@@ -85,7 +78,7 @@ export const FileProvider = ({ children }: { children: ReactNode }) => {
   const [projectStructure, setProjectStructure] =
     useState<FolderInterface[]>(defaultFolders);
   const [selectedFile, setSelectedFile] = useState("");
-  const [selectedFolder, setSelectedFolder] = useState("");
+  const [selectedFolder, setSelectedFolder] = useState(":root");
   const [resourceType, setResourceType] = useState<ResourceInterface>({
     isCreating: false,
     type: "file",

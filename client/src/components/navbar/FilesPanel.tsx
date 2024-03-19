@@ -3,10 +3,15 @@ import Folder from "./file/Folder";
 import { useFile } from "../../context/FileContext";
 
 const FilesPanel = () => {
-  const { projectStructure } = useFile();
+  const { projectStructure, setSelectedFolder } = useFile();
 
   return (
-    <div className="p-4">
+    <div
+      className="h-full p-4"
+      onClick={(event) => {
+        event.currentTarget === event.target && setSelectedFolder(":root");
+      }}
+    >
       <div className=" space-y-4">
         <FileControls />
 

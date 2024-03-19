@@ -1,11 +1,14 @@
 import { useFile } from "../../../context/FileContext";
 
 const FileControls = () => {
-  const { selectedFolder, setResourceType } = useFile();
+  const { setResourceType } = useFile();
 
   const newFile = () => {
-    console.log(selectedFolder);
     setResourceType({ isCreating: true, type: "file" });
+  };
+
+  const newFolder = () => {
+    setResourceType({ isCreating: true, type: "folder" });
   };
 
   return (
@@ -28,6 +31,7 @@ const FileControls = () => {
             alt="new-folder"
             width={25}
             className="cursor-pointer"
+            onClick={newFolder}
           />
         </div>
         <div>
